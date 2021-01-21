@@ -1,0 +1,55 @@
+@page "/gauss"
+
+<h1>Gaussian elimination algorithm</h1>
+
+<br>
+<form id="input_matrix" role="form">
+    @foreach (var i in column_range())
+    {
+        @foreach (var ii in i.GetRange(0, i.Count - 1))
+        {
+            <input type="number" size="5" minlength="1" value=@ii>
+        }
+        <span> = </span>
+        <input type="number" size="5" minlength="1" @bind="i[i.Count - 1]">
+        <br>
+    }
+</form>
+<br>
+    <button class="button" type="button"><span class="oi oi-chevron-right" aria-hidden="true"></span></button>
+    <button class="button" type="button"><span class="oi oi-chevron-bottom" aria-hidden="true"></span></button>
+
+<input @bind="c"> Current value: @c
+
+@code {
+    private Matrix mat = new Matrix(2, 2);
+
+    private int c;
+
+    private IEnumerable<List<int>> column_range()
+    {
+        for (int i = 0; i < mat.rows; ++i)
+            yield return mat.row(i).data;
+    }
+
+    private IEnumerable<int[]> solve()
+    {
+        Matrix m = Matrix.reorder(mat);
+
+        for (int i = 1; i < m.rows - 1; ++i) // Go slowly down
+        {
+            //m = new Matrix(mat.rows, mat.columns);
+
+            //for (int ii = 0; ii < i; ++ii) // Copy over processed values
+                //m.row(ii, mat.row(ii));
+
+            for (int ii = i; ii < m.rows - 1; ++ii)
+            {
+                float multipler = m.get(i - 1, i) / m.get(i - 1, i - 1);
+
+                var now = m.row(i);
+                now.multiply(multipler).subtract(m.row(i - 1));
+            }
+        }
+    }
+}

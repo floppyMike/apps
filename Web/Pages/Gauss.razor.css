@@ -1,0 +1,11 @@
+.button
+{
+    background-color: cadetblue;
+    height: 30px;
+    width: 30px;
+    border: none;
+    border-radius: 50%;
+    margin: 4px 4px;
+}
+
+#container p { display: inline }
