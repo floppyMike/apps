@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Row
 {
@@ -52,11 +53,65 @@ public class Row
 
     public int size { get => m_data.Count; }
 
-    public static int start_zeros(Row r)
+
+    private List<float> m_data;
+}
+
+
+
+
+
+public class Matrix
+{
+    public Matrix(int rows, int columns)
+    {
+        m_data = new float[rows, columns];
+    }
+
+    public float this[int x, int y]
+    {
+        get => m_data[y, x];
+        set => m_data[y, x] = value;
+    }
+
+    public void push()
+    {
+        float[,] n = new float[rows + 1, columns + 1];
+
+        for (int y = 0; y < rows - 1; ++y)
+            for (int x = 0; x < columns - 1; ++x)
+                n[y, x] = m_data[y, x];
+        
+        for (int y = 0; y < rows - 1; ++y)
+            n[y, columns] = m_data[y, columns - 1];
+
+        m_data = n;
+    }
+
+    public void pop()
+    {
+        float [,] n = new float[rows - 1, columns - 1];
+
+        for (int y = 0; y < rows - 1; ++y)
+            for (int x = 0; x < columns - 1; ++x)
+                n[y, x] = m_data[y, x];
+        
+        for (int y = 0; y < rows - 1; ++y)
+            n[y, columns - 2] = m_data[y, columns - 1];
+
+        m_data = n;
+    }
+
+    public void copy(Matrix m, int r)
+    {
+        for (int i = 0; i < columns; ++i) m_data[r, i] = m[i, r];
+    }
+
+    public static int start_zeros(Matrix m, int r)
     {
         int x = 0;
-        for (int i = 0; i < r.size; ++i)
-            if (r[i] == 0)
+        for (int i = 0; i < m.columns; ++i)
+            if (m[i, r] == 0)
                 ++x;
             else
                 break;
@@ -64,38 +119,11 @@ public class Row
         return x;
     }
 
-    private List<float> m_data;
-}
-
-public class Matrix
-{
-    public Matrix(int rows, int columns)
-    {
-        m_rows = rows;
-        m_columns = columns;
-
-        m_data = new List<float>(new float[rows * columns + rows]);
-    }
-
-    public float get(int x, int y) => m_data[x + y * m_rows];
-    public void set(int x, int y, int v) => m_data[x + y * m_rows] = v;
-
-    public Row row(int r) => new Row(m_data.GetRange(r, m_columns + 1));
-    public void row(int r, Row l)
-    {
-        for (int i = 0; i < m_columns; ++i)
-        {
-            int idx = r * m_columns + i;
-            m_data[idx] = l[idx];
-        }
-    }
-    //public int result(int r) => m_equ[r];
-
     public static int[] order_list(Matrix x)
     {
         int[] y = new int[x.rows];
         for (int i = 0; i < x.rows; ++i)
-            y[i] = Row.start_zeros(x.row(i));
+            y[i] = Matrix.start_zeros(x, i);
         
         return y;
     }
@@ -109,16 +137,14 @@ public class Matrix
         for (int top_size = 0; top_size < x.columns; ++top_size)
             for (int i = 0; i < x.rows; ++i)
                 if (order[i] == top_size)
-                    y.row(top_size, x.row(i));
+                    y.copy(x, i);
 
         return y;
     }
 
-    public int rows { get => m_rows; }
-    public int columns { get => m_columns; }
-    public List<float> data { get => m_data; }
+    public int rows { get => m_data.GetLength(0); }
+    public int columns { get => m_data.GetLength(1); }
+    public float[,] data { get => m_data; }
 
-    private int m_rows, m_columns;
-    private List<float> m_data;
-    //private int[] m_equ;
+    private float[,] m_data;
 }

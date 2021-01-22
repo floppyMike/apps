@@ -3,28 +3,39 @@
 <h1>Gaussian elimination algorithm</h1>
 
 <br>
-<form id="input_matrix" role="form">
-    @for (int ii = 0; ii < mat.rows; ++ii)
-    {
-        var lii = ii;
-        @for (int i = 0; i < mat.columns; ++i)
-        {
-            var li = i;
-            <input type="number" size="5" minlength="1" @bind="mat.data[li + (mat.columns + 1) * lii]">
-        }
-        <span> = </span>
-        <input type="number" size="5" minlength="1" @bind="mat.data[mat.columns + (mat.columns + 1) * lii]">
-        <br>
-    }
-</form>
+<button class="button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
+<button class="button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
 <br>
-    <button class="button" type="button"><span class="oi oi-chevron-right" aria-hidden="true"></span></button>
-    <button class="button" type="button"><span class="oi oi-chevron-bottom" aria-hidden="true"></span></button>
+@for (int ii = 0; ii < mat.rows; ++ii)
+{
+    var lii = ii;
+    @for (int i = 0; i < mat.columns - 1; ++i)
+    {
+        var li = i;
+        <input type="number" size="5" minlength="1" @bind="mat.data[lii, li]">
+    }
+    <span> = </span>
+    <input type="number" size="5" minlength="1" @bind="mat.data[lii, mat.columns - 1]">
+    <br>
+}
+<br>
 
-    Value: @mat.data[0]
+Value: @mat[0, 0]
 
 @code {
-    private Matrix mat = new Matrix(2, 2);
+    private Matrix mat = new Matrix(2, 3);
+
+    private void shrink()
+    {
+        if (mat.columns > 3)
+            mat.pop();
+    }
+
+    private void expand()
+    {
+        if (mat.columns < 7)
+            mat.push();
+    }
 
     @* private IEnumerable<int[]> solve()
     {
