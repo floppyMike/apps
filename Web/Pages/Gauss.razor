@@ -4,16 +4,16 @@
 
 <br>
 <form id="input_matrix" role="form">
-    @for (int i = 0; i < mat_size; ++i)
+    @for (int ii = 0; ii < mat.rows; ++ii)
     {
-        var li = i;
-        @for (int j = 0; j < mat_size; ++j)
+        var lii = ii;
+        @for (int i = 0; i < mat.columns; ++i)
         {
-            var lj = j;
-            <input type="number" size="5" minlength="1" @bind="fields[li * (mat_size + 1) + lj]">
+            var li = i;
+            <input type="number" size="5" minlength="1" @bind="mat.data[li + (mat.columns + 1) * lii]">
         }
         <span> = </span>
-        <input type="number" size="5" minlength="1" @bind="fields[li * (mat_size + 1) + mat_size]">
+        <input type="number" size="5" minlength="1" @bind="mat.data[mat.columns + (mat.columns + 1) * lii]">
         <br>
     }
 </form>
@@ -21,19 +21,10 @@
     <button class="button" type="button"><span class="oi oi-chevron-right" aria-hidden="true"></span></button>
     <button class="button" type="button"><span class="oi oi-chevron-bottom" aria-hidden="true"></span></button>
 
-Current value: @fields[0]
+    Value: @mat.data[0]
 
 @code {
     private Matrix mat = new Matrix(2, 2);
-
-    private int mat_size = 2;
-    private float[] fields = new float[6];
-
-    private IEnumerable<Row> column_range()
-    {
-        for (int i = 0; i < mat.rows; ++i)
-            yield return mat.row(i);
-    }
 
     @* private IEnumerable<int[]> solve()
     {
