@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class Row
 {
-    public Row(int s) => m_data = new List<int>(new int[s]);
+    public Row(int s) => m_data = new List<float>(new float[s]);
 
-    public Row(List<int> l) => m_data = l;
+    public Row(List<float> l) => m_data = l;
 
-    public int this[int i]
+    public float this[int i]
     {
         get => m_data[i];
         set => m_data[i] = value;
@@ -25,7 +25,7 @@ public class Row
     public Row multiply(float v)
     {
         for (int i = 0; i < m_data.Count; ++i)
-            m_data[i] *= (int)v;
+            m_data[i] *= v;
 
         return this;
     }
@@ -45,7 +45,10 @@ public class Row
         for (int i = 0; i < m_data.Count; ++i) m_data[i] = b[i];
     }
 
-    public List<int> data { get => m_data; }
+    public List<float> parameters { get => m_data.GetRange(0, m_data.Count - 1); set => m_data = value; }
+    public float result { get => m_data[m_data.Count - 1]; set => m_data[m_data.Count - 1] = value; }
+
+    public List<float> data { get => m_data; }
 
     public int size { get => m_data.Count; }
 
@@ -61,7 +64,7 @@ public class Row
         return x;
     }
 
-    private List<int> m_data;
+    private List<float> m_data;
 }
 
 public class Matrix
@@ -71,10 +74,10 @@ public class Matrix
         m_rows = rows;
         m_columns = columns;
 
-        m_data = new List<int>(new int[rows * columns + rows]);
+        m_data = new List<float>(new float[rows * columns + rows]);
     }
 
-    public int get(int x, int y) => m_data[x + y * m_rows];
+    public float get(int x, int y) => m_data[x + y * m_rows];
     public void set(int x, int y, int v) => m_data[x + y * m_rows] = v;
 
     public Row row(int r) => new Row(m_data.GetRange(r, m_columns + 1));
@@ -113,8 +116,9 @@ public class Matrix
 
     public int rows { get => m_rows; }
     public int columns { get => m_columns; }
+    public List<float> data { get => m_data; }
 
     private int m_rows, m_columns;
-    private List<int> m_data;
+    private List<float> m_data;
     //private int[] m_equ;
 }
