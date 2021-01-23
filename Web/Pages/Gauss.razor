@@ -5,8 +5,8 @@
 <p>The matrix below can be expanded up to 6x6 and as little as 2x2. When a solution is present the calculator will display it numerically below the result matrix. When a infinite amount of solutions or no solutions are present then the variables will be 0 and the result matrix should be used.</p>
 
 <br>
-<button class="theme button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
-<button class="theme button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
+<button class="button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
+<button class="button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
 <br>
 @for (int ii = 0; ii < mat.rows; ++ii)
 {
