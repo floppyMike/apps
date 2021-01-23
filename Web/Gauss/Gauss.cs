@@ -189,6 +189,8 @@ public class Matrix
         for (int i = m.rows - 1; i >= 0; --i)
             if (m[i, i] != 0)
                 res[i] = (m[m.columns - 1, i] - m.sum(i, i, m.columns - 1, res)) / m[i, i];
+            else
+                break;
         
         return res;
     }

@@ -2,6 +2,8 @@
 
 <h1>Gaussian elimination algorithm</h1>
 
+<p>The matrix below can be expanded up to 6x6 and as little as 2x2. When a solution is present the calculator will display it numerically below the result matrix. When a infinite amount of solutions or no solutions are present then the variables will be 0 and the result matrix should be used.</p>
+
 <br>
 <button class="theme button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
 <button class="theme button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
@@ -42,8 +44,6 @@
     <p>Variable @li = @result[li]</p>
 }
 
-<button @onclick="reset"></button>
-
 @code {
     private Matrix mat = new Matrix(3, 4);
     private Matrix o_mat = new Matrix(3, 4);
@@ -57,13 +57,6 @@
             o_mat.pop();
             result = new double[result.Length - 1];
         }
-    }
-
-    private void reset()
-    {
-            mat[0, 0] = 3; mat[1, 0] = 6; mat[2, 0] = -2;  mat[3, 0] = -15; 
-            mat[0, 1] = 3; mat[1, 1] = 2; mat[2, 1] = 1;  mat[3, 1] = 2;
-            mat[0, 2] = 2; mat[1, 2] = 5; mat[2, 2] = -5; mat[3, 2] = -23;
     }
 
     private void expand()
