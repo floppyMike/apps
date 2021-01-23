@@ -1,0 +1,79 @@
+@page "/gauss"
+
+<h1>Gaussian elimination algorithm</h1>
+
+<p>The matrix below can be expanded up to 6x6 and as little as 2x2. When a solution is present the calculator will display it numerically below the result matrix. When a infinite amount of solutions or no solutions are present then the variables will be 0 and the result matrix should be used.</p>
+
+<br>
+<button class="button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
+<button class="button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
+<br>
+@for (int ii = 0; ii < mat.rows; ++ii)
+{
+    var lii = ii;
+    @for (int i = 0; i < mat.columns - 1; ++i)
+    {
+        var li = i;
+        <input type="number" size="5" minlength="1" @bind="mat.data[lii, li]">
+    }
+    <span> = </span>
+    <input type="number" size="5" minlength="1" @bind="mat.data[lii, mat.columns - 1]">
+    <br>
+}
+<br>
+<button type="button" @onclick="solve"><span>Solve</span></button>
+<hr>
+
+@for (int ii = 0; ii < o_mat.rows; ++ii)
+{
+    var lii = ii;
+    @for (int i = 0; i < o_mat.columns - 1; ++i)
+    {
+        var li = i;
+        <input type="number" size="5" minlength="1" @bind="o_mat.data[lii, li]" disabled>
+    }
+    <span> = </span>
+    <input type="number" size="5" minlength="1" @bind="o_mat.data[lii, o_mat.columns - 1]" disabled>
+    <br>
+}
+<br>
+
+@for (int i = 0; i < result.Length; ++i)
+{
+    var li = i;
+    <p>Variable @li = @result[li]</p>
+}
+
+@code {
+    private Matrix mat = new Matrix(3, 4);
+    private Matrix o_mat = new Matrix(3, 4);
+    private double[] result = new double[3];
+
+    private void shrink()
+    {
+        if (mat.columns > 3)
+        {
+            mat.pop();
+            o_mat.pop();
+            result = new double[result.Length - 1];
+        }
+    }
+
+    private void expand()
+    {
+        if (mat.columns < 7)
+        {
+            mat.push();
+            o_mat.push();
+            result = new double[result.Length + 1];
+        }
+    }
+
+    private void solve()
+    {
+        Matrix m = Matrix.reorder(mat);
+        Matrix.solve(m);
+        o_mat = m;
+        result = Matrix.vars(o_mat);
+    }
+}

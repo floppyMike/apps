@@ -12,7 +12,7 @@ jobs:
       - name: Setup .NET Core SDK
         run: sudo apt-get update; sudo apt-get install -y apt-transport-https && sudo apt-get update && sudo apt-get install -y dotnet-sdk-5.0
       - name: Publish .NET Core Project
-        run: dotnet publish apps.csproj -c Release -o release --nologo
+        run: dotnet publish Web/apps.csproj -c Release -o release --nologo
       - name: Change base directory in index.html to repo name
         run: sed -i 's/<base href="\/" \/>/<base href="\/apps\/" \/>/g' release/wwwroot/index.html
       - name: Add .nojekyll file
