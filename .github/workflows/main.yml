@@ -7,34 +7,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        
+      
       - name: Setup .NET Core SDK Packaging
         run: wget https://packages.microsoft.com/config/ubuntu/20.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && sudo dpkg -i packages-microsoft-prod.deb
-        
+      
       - name: Setup .NET Core SDK
         run: sudo apt-get update; sudo apt-get install -y apt-transport-https && sudo apt-get update && sudo apt-get install -y dotnet-sdk-5.0
-        
+      
       - name: Publish .NET Core Project
-        run: dotnet publish Web/apps.csproj -c Release -o output --nologo
-        
-      - name: Prerender static website
-        run: npx react-snap
-        
+        run: dotnet publish Web/apps.csproj -c Release -o release --nologo
+      
       - name: Change base directory in index.html to repo name
-        working-directory: output/wwwroot
-        run: |
-          find . -name "*.html" | while read htmlFile; do
-              sed -i 's/<base href="\/" \/>/<base href="\/apps\/" \/>/g' $htmlFile
-              sed -i 's/<script type="text\/javascript">var Module; window.__wasmmodulecallback__(); delete window.__wasmmodulecallback__;<\/script><script src="_framework\/dotnet.5.0.1.js" defer="" integrity="sha256-SWZOE2EsCqc\/7dPgJrcFqUvVvdeJ9cipeZ2NFMC9v2s=" crossorigin="anonymous"><\/script>//g' $htmlFile
-          done
-        
+        run: sed -i 's/<base href="\/" \/>/<base href="\/apps\/" \/>/g' release/wwwroot/index.html
+      
       - name: Add .nojekyll file
-        run: touch output/wwwroot/.nojekyll
-        
+        run: touch release/wwwroot/.nojekyll
+      
       - name: Commit wwwroot to Github Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
-        
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: output/wwwroot
+          FOLDER: release/wwwroot
