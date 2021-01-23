@@ -119,16 +119,6 @@ public class Matrix
         return this;
     }
 
-    public Matrix num_filter(int sr)
-    {
-        for (int i= 0; i < columns; ++i)
-        {
-            m_data[sr, i] = Math.Round(m_data[sr, i], 4);
-        }
-
-        return this;
-    }
-
     public static int start_zeros(Matrix m, int r)
     {
         int x = 0;
@@ -175,13 +165,32 @@ public class Matrix
                     if (m[i, root] != 0)
                     {
                         double div = m[root, root] / m[root, i];
-                        m.multiply(div, i).subtract(m, i, root).num_filter(i);
+                        m.multiply(div, i).subtract(m, i, root);
                     }
                 }
             }
         }
 
         return m;
+    }
+
+    public double sum(int r, int beg, int end, double[] arr)
+    {
+        double s = 0;
+        for (; beg < end; ++beg)
+            s += m_data[r, beg] * arr[beg];
+        return s;
+    }
+
+    public static double[] vars(Matrix m)
+    {
+        double[] res = new double[m.columns - 1];
+
+        for (int i = m.rows - 1; i >= 0; --i)
+            if (m[i, i] != 0)
+                res[i] = (m[m.columns - 1, i] - m.sum(i, i, m.columns - 1, res)) / m[i, i];
+        
+        return res;
     }
 
     public int rows { get => m_data.GetLength(0); }

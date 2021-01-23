@@ -29,7 +29,7 @@ namespace Gauss
             x[0, 1] = 0; x[1, 1] = 1; x[2, 1] = 5;
             x[0, 0] = 0; x[1, 0] = 0; x[2, 0] = 7;
             var y = Matrix.reorder(x);
-            Assert.Equal(new float[,]{ { 0, 0, 7, 0 }, { 0, 1, 5, 0 }, { 2, 3, 4, 0 } }, y.data);
+            Assert.Equal(new double[,]{ { 0, 0, 7, 0 }, { 0, 1, 5, 0 }, { 2, 3, 4, 0 } }, y.data);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Gauss
             x[0, 0] = 1;
             x[1, 1] = 1;
             x.push();
-            Assert.Equal(new float[,]{ { 1, 0, 0, 0 }, { 0, 1, 0, 0 } }, x.data);
+            Assert.Equal(new double[,]{ { 1, 0, 0, 0 }, { 0, 1, 0, 0 } }, x.data);
         }
 
         [Fact]
@@ -51,6 +51,17 @@ namespace Gauss
             x[0, 2] = 9; x[1, 2] = 10; x[2, 2] = 11; x[3, 2] = 12;
             Matrix y = Matrix.reorder(x);
             Matrix.solve(y);
+        }
+
+        [Fact]
+        public void Matrix_vars()
+        {
+            Matrix mat = new Matrix (3, 4);
+            mat[0, 0] = 3; mat[1, 0] = 6; mat[2, 0] = -2;  mat[3, 0] = -15; 
+            mat[0, 1] = 3; mat[1, 1] = 2; mat[2, 1] = 1;  mat[3, 1] = 2;
+            mat[0, 2] = 2; mat[1, 2] = 5; mat[2, 2] = -5; mat[3, 2] = -23;
+            Matrix.solve(mat);
+            Assert.Equal(new double[] { 1, -2, 3 }, Matrix.vars(mat));
         }
     }
 }
