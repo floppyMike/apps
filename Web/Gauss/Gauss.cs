@@ -65,10 +65,10 @@ public class Matrix
 {
     public Matrix(int rows, int columns)
     {
-        m_data = new float[rows, columns];
+        m_data = new double[rows, columns];
     }
 
-    public float this[int x, int y]
+    public double this[int x, int y]
     {
         get => m_data[y, x];
         set => m_data[y, x] = value;
@@ -76,7 +76,7 @@ public class Matrix
 
     public void push()
     {
-        float[,] n = new float[rows + 1, columns + 1];
+        double[,] n = new double[rows + 1, columns + 1];
 
         for (int y = 0; y < rows - 1; ++y)
             for (int x = 0; x < columns - 1; ++x)
@@ -90,7 +90,7 @@ public class Matrix
 
     public void pop()
     {
-        float [,] n = new float[rows - 1, columns - 1];
+        double [,] n = new double[rows - 1, columns - 1];
 
         for (int y = 0; y < rows - 1; ++y)
             for (int x = 0; x < columns - 1; ++x)
@@ -105,6 +105,28 @@ public class Matrix
     public void copy(Matrix m, int r)
     {
         for (int i = 0; i < columns; ++i) m_data[r, i] = m[i, r];
+    }
+
+    public Matrix multiply(double v, int sr)
+    {
+        for (int i = 0; i < columns; ++i) m_data[sr, i] *= v;
+        return this;
+    }
+
+    public Matrix subtract(Matrix m, int sr, int dr)
+    {
+        for (int i = 0; i < columns; ++i) m_data[sr, i] -= m[i, dr];
+        return this;
+    }
+
+    public Matrix num_filter(int sr)
+    {
+        for (int i= 0; i < columns; ++i)
+        {
+            m_data[sr, i] = Math.Round(m_data[sr, i], 4);
+        }
+
+        return this;
     }
 
     public static int start_zeros(Matrix m, int r)
@@ -142,9 +164,29 @@ public class Matrix
         return y;
     }
 
+    public static Matrix solve(Matrix m)
+    {
+        for (int root = 0; root < m.rows - 1; ++root)
+        {
+            if (m[root, root] != 0)
+            {
+                for (int i = root + 1; i < m.rows; ++i)
+                {
+                    if (m[i, root] != 0)
+                    {
+                        double div = m[root, root] / m[root, i];
+                        m.multiply(div, i).subtract(m, i, root).num_filter(i);
+                    }
+                }
+            }
+        }
+
+        return m;
+    }
+
     public int rows { get => m_data.GetLength(0); }
     public int columns { get => m_data.GetLength(1); }
-    public float[,] data { get => m_data; }
+    public double[,] data { get => m_data; }
 
-    private float[,] m_data;
+    private double[,] m_data;
 }

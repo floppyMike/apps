@@ -3,8 +3,8 @@
 <h1>Gaussian elimination algorithm</h1>
 
 <br>
-<button class="button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
-<button class="button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
+<button class="theme button" type="button" @onclick="expand"><span class="oi oi-plus" aria-hidden="true"></span></button>
+<button class="theme button" type="button" @onclick="shrink"><span class="oi oi-minus" aria-hidden="true"></span></button>
 <br>
 @for (int ii = 0; ii < mat.rows; ++ii)
 {
@@ -19,44 +19,56 @@
     <br>
 }
 <br>
+<button type="button" @onclick="solve"><span>Solve</span></button>
+<hr>
 
-Value: @mat[0, 0]
+@for (int ii = 0; ii < o_mat.rows; ++ii)
+{
+    var lii = ii;
+    @for (int i = 0; i < o_mat.columns - 1; ++i)
+    {
+        var li = i;
+        <input type="number" size="5" minlength="1" @bind="o_mat.data[lii, li]" disabled>
+    }
+    <span> = </span>
+    <input type="number" size="5" minlength="1" @bind="o_mat.data[lii, o_mat.columns - 1]" disabled>
+    <br>
+}
+<br>
+
+@for (int i = 0; i < result.Length; ++i)
+{
+    var li = i;
+    <p>Variable @li = @result[li]</p>
+}
 
 @code {
-    private Matrix mat = new Matrix(2, 3);
+    private Matrix mat = new Matrix(3, 4);
+    private Matrix o_mat = new Matrix(3, 4);
+    private double[] result = new double[3];
 
     private void shrink()
     {
         if (mat.columns > 3)
+        {
             mat.pop();
+            o_mat.pop();
+        }
     }
 
     private void expand()
     {
         if (mat.columns < 7)
+        {
             mat.push();
+            o_mat.push();
+        }
     }
 
-    @* private IEnumerable<int[]> solve()
+    private void solve()
     {
         Matrix m = Matrix.reorder(mat);
-
-        for (int i = 1; i < m.rows - 1; ++i) // Go slowly down
-        {
-            //m = new Matrix(mat.rows, mat.columns);
-
-            //for (int ii = 0; ii < i; ++ii) // Copy over processed values
-                //m.row(ii, mat.row(ii));
-
-            for (int ii = i; ii < m.rows - 1; ++ii)
-            {
-                float multipler = m.get(i - 1, i) / m.get(i - 1, i - 1);
-
-                var now = m.row(i);
-                now.multiply(multipler).subtract(m.row(i - 1));
-            }
-        }
-
-        return null;
-    } *@
+        Matrix.solve(m);
+        o_mat = m;
+    }
 }

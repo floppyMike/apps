@@ -1,6 +1,10 @@
-.button
+.theme
 {
     background-color: cadetblue;
+}
+
+.button
+{
     height: 30px;
     width: 30px;
     border: none;
