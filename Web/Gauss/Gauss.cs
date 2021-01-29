@@ -101,7 +101,7 @@ public class Matrix
             {
                 for (int i = root + 1; i < m.rows; ++i)
                 {
-                    if (m[i, root] != 0)
+                    if (m[root, i] != 0)
                     {
                         double div = m[root, root] / m[root, i];
                         m.multiply(div, i).subtract(m, i, root);
